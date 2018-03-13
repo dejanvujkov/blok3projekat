@@ -31,7 +31,7 @@
                <Menu DockPanel.Dock="Top">
                     <MenuItem Header="Get Values" Command="{Binding NavCommand}" CommandParameter="values"/>
                     <MenuItem Header="Get Extended Values" Command="{Binding NavCommand}" CommandParameter="extended"/>
-                    <MenuItem Header="Get Reladed Values" Command="{Binding NavCommand}" CommandParameter="related"/>
+                    <MenuItem Header="Get Related Values" Command="{Binding NavCommand}" CommandParameter="related"/>
                </Menu>
           </DockPanel>
           <Grid Grid.Row="1">
