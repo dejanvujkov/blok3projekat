@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:cim="http://iec.ch/TC57/2010/CIM-schema-cim15#"
+	xmlns:ftn="http://www.ftnydro.com/CIM15/2010/extension#">
+	
+	<cim:Curve rdf:ID="Curve01">
+		<cim:Curve.curveStyle>formula</cim:Curve.curveStyle>
+		<cim:Curve.xMultiplier>T</cim:Curve.xMultiplier>
+		<cim:Curve.xUnit>J</cim:Curve.xUnit>
+		<cim:Curve.y1Multiplier>micro</cim:Curve.y1Multiplier>
+		<cim:Curve.y1Unit>Pa</cim:Curve.y1Unit>
+		<cim:Curve.y2Multiplier>c</cim:Curve.y2Multiplier>
+		<cim:Curve.y2Unit>A</cim:Curve.y2Unit>
+		<cim:Curve.y3Multiplier>G</cim:Curve.y3Multiplier>
+		<cim:Curve.y3Unit>Pa</cim:Curve.y3Unit>
+		<cim:IdentifiedObject.aliasName>Curve</cim:IdentifiedObject.aliasName>
+		<cim:IdentifiedObject.mRID>Curve01</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Curve</cim:IdentifiedObject.name>
+	</cim:Curve>
+
+	<cim:CurveData rdf:ID="CurveData01">
+		<cim:CurveData.Curve rdf:resource="#Curve01"/>
+		<cim:CurveData.xvalue>5</cim:CurveData.xvalue>
+		<cim:CurveData.y1value>1.2</cim:CurveData.y1value>
+		<cim:CurveData.y2value>3.5</cim:CurveData.y2value>
+		<cim:CurveData.y3value>5.8</cim:CurveData.y3value>
+		<cim:IdentifiedObject.aliasName>CurveData</cim:IdentifiedObject.aliasName>
+		<cim:IdentifiedObject.mRID>CurveData01</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>CurveData</cim:IdentifiedObject.name>
+	</cim:CurveData>
+
+	<cim:OutageSchedule rdf:ID="OutageSchedule01">
+		<cim:BasicIntervalSchedule.startTime>12/2/2017</cim:BasicIntervalSchedule.startTime>
+		<cim:BasicIntervalSchedule.value1Multiplier>micro</cim:BasicIntervalSchedule.value1Multiplier>
+		<cim:BasicIntervalSchedule.value1Unit>W</cim:BasicIntervalSchedule.value1Unit>
+		<cim:BasicIntervalSchedule.value2Multiplier>T</cim:BasicIntervalSchedule.value2Multiplier>
+		<cim:BasicIntervalSchedule.value2Unit>VAr</cim:BasicIntervalSchedule.value2Unit>
+		<cim:IdentifiedObject.aliasName>OutageSchedule</cim:IdentifiedObject.aliasName>
+		<cim:IdentifiedObject.mRID>OutageSchedule01</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>OutageSchedule</cim:IdentifiedObject.name>
+	</cim:OutageSchedule>
+
+	<cim:ProtectedSwitch rdf:ID="ProtectedSwitch01">
+		<cim:Switch.normalOpen>true</cim:Switch.normalOpen>
+		<cim:Switch.ratedCurrent>10.2</cim:Switch.ratedCurrent>
+		<cim:Switch.retained>true</cim:Switch.retained>
+		<cim:Switch.switchOnCount>34</cim:Switch.switchOnCount>
+		<cim:Switch.switchOnDate>6/1/2017</cim:Switch.switchOnDate>
+		<cim:Equipment.aggregate>true</cim:Equipment.aggregate>
+		<cim:Equipment.normallyInService>false</cim:Equipment.normallyInService>
+		<cim:PowerSystemResource.OutageSchedule rdf:resource="#OutageSchedule01"/>
+		<cim:IdentifiedObject.aliasName>ProtectedSwitch</cim:IdentifiedObject.aliasName>
+		<cim:IdentifiedObject.mRID>ProtectedSwitch01</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>ProtectedSwitch</cim:IdentifiedObject.name>
+	</cim:ProtectedSwitch>
+
+	<cim:Disconnector rdf:ID="Disconnector01">
+		<cim:Switch.normalOpen>false</cim:Switch.normalOpen>
+		<cim:Switch.ratedCurrent>12.96</cim:Switch.ratedCurrent>
+		<cim:Switch.retained>true</cim:Switch.retained>
+		<cim:Switch.switchOnCount>12</cim:Switch.switchOnCount>
+		<cim:Switch.switchOnDate>5/3/2017</cim:Switch.switchOnDate>
+		<cim:Equipment.aggregate>true</cim:Equipment.aggregate>
+		<cim:Equipment.normallyInService>true</cim:Equipment.normallyInService>
+		<cim:PowerSystemResource.OutageSchedule rdf:resource="#OutageSchedule01"/>
+		<cim:IdentifiedObject.aliasName>Disconnector</cim:IdentifiedObject.aliasName>
+		<cim:IdentifiedObject.mRID>Disconnector01</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Disconnector</cim:IdentifiedObject.name>
+	</cim:Disconnector>
+
+	<cim:IrregularTimePoint rdf:ID="IrregularTimePoint01">
+		<cim:IrregularTimePoint.IntervalSchedule rdf:resource="#OutageSchedule01"/>
+		<cim:IrregularTimePoint.time>2.5</cim:IrregularTimePoint.time>
+		<cim:IrregularTimePoint.value1>96.3</cim:IrregularTimePoint.value1>
+		<cim:IrregularTimePoint.value2>14.22</cim:IrregularTimePoint.value2>
+		<cim:IdentifiedObject.aliasName>IrregularTimePoint</cim:IdentifiedObject.aliasName>
+		<cim:IdentifiedObject.mRID>IrregularTimePoint01</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>IrregularTimePoint</cim:IdentifiedObject.name>
+	</cim:IrregularTimePoint>
+
+	<cim:RegularIntervalSchedule rdf:ID="RegularIntervalSchedule01">
+		<cim:RegularIntervalSchedule.endTime>1/5/2017</cim:RegularIntervalSchedule.endTime>
+		<cim:RegularIntervalSchedule.timeStep>9.8</cim:RegularIntervalSchedule.timeStep>
+		<cim:BasicIntervalSchedule.startTime>11/11/2017</cim:BasicIntervalSchedule.startTime>
+		<cim:BasicIntervalSchedule.value1Multiplier>c</cim:BasicIntervalSchedule.value1Multiplier>
+		<cim:BasicIntervalSchedule.value1Unit>rad</cim:BasicIntervalSchedule.value1Unit>
+		<cim:BasicIntervalSchedule.value2Multiplier>micro</cim:BasicIntervalSchedule.value2Multiplier>
+		<cim:BasicIntervalSchedule.value2Unit>VA</cim:BasicIntervalSchedule.value2Unit>
+		<cim:IdentifiedObject.aliasName>RegularIntervalSchedule</cim:IdentifiedObject.aliasName>
+		<cim:IdentifiedObject.mRID>RegularIntervalSchedule01</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>RegularIntervalSchedule</cim:IdentifiedObject.name>
+	</cim:RegularIntervalSchedule>
+
+	<cim:RegularTimePoint rdf:ID="RegularTimePoint01">
+		<cim:RegularTimePoint.IntervalSchedule rdf:resource="#OutageSchedule01"/>
+		<cim:RegularTimePoint.sequenceNumber>9</cim:RegularTimePoint.sequenceNumber>
+		<cim:RegularTimePoint.value1>15.98</cim:RegularTimePoint.value1>
+		<cim:RegularTimePoint.value2>16.99</cim:RegularTimePoint.value2>
+		<cim:IdentifiedObject.aliasName>RegularTimePoint</cim:IdentifiedObject.aliasName>
+		<cim:IdentifiedObject.mRID>RegularTimePoint01</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>RegularTimePoint</cim:IdentifiedObject.name>
+	</cim:RegularTimePoint>
+</rdf:RDF>

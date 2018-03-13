@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="Client.View.GetValuesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Client.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="350">
+    <Grid>
+          <Grid.RowDefinitions>
+               <RowDefinition Height="Auto"/>
+               <RowDefinition Height="Auto"/>
+               <RowDefinition Height="Auto"/>
+               <RowDefinition/>
+          </Grid.RowDefinitions>
+
+          <Label Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="20">Get Values</Label>
+          <Label Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15" Margin="20,0,0,0">GID:</Label>
+          <TextBox Name="tbGid" Grid.Row="1" Text="{Binding Gid}" HorizontalAlignment="Right" VerticalAlignment="Center" Width="200" Margin="0,0,40,0"></TextBox>
+          <Button Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding GetValues}" Margin="0,10,0,0" Height="30" Width="80">Get Values</Button>
+          <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+               <TextBlock Grid.Row="3" Text="{Binding Result}" Height="370" Width="340" Margin="0,20,0,0"></TextBlock>
+          </ScrollViewer>
+     </Grid>
+</UserControl>

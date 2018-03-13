@@ -1,0 +1,41 @@
+﻿<Window x:Class="Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        xmlns:views="clr-namespace:Client.View"
+        xmlns:viewModels ="clr-namespace:Client.ViewModel"
+        mc:Ignorable="d"
+        Title="Integracije - Dejan Vujkov e342-2014" Height="500" Width="350" WindowStartupLocation="CenterScreen">
+     <Window.DataContext>
+          <local:MainWindowViewModel/>
+     </Window.DataContext>
+     <Window.Resources>
+          <DataTemplate DataType="{x:Type viewModels:GetValuesViewModel}">
+               <views:GetValuesView/>
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type viewModels:GetExtendedValuesViewModel}">
+               <views:GetExtendedValuesView/>
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type viewModels:GetRelatedValuesViewModel}">
+               <views:GetRelatedValuesView/>
+          </DataTemplate>
+     </Window.Resources>
+     <Grid>
+          <Grid.RowDefinitions>
+               <RowDefinition Height="Auto"/>
+               <RowDefinition/>
+          </Grid.RowDefinitions>
+          <DockPanel Grid.Row="0" Margin="5">
+               <Menu DockPanel.Dock="Top">
+                    <MenuItem Header="Get Values" Command="{Binding NavCommand}" CommandParameter="values"/>
+                    <MenuItem Header="Get Extended Values" Command="{Binding NavCommand}" CommandParameter="extended"/>
+                    <MenuItem Header="Get Reladed Values" Command="{Binding NavCommand}" CommandParameter="related"/>
+               </Menu>
+          </DockPanel>
+          <Grid Grid.Row="1">
+               <ContentControl Content="{Binding CurrentViewModel}"/>
+          </Grid>
+     </Grid>
+</Window>
