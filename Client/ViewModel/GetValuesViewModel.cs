@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,122 +13,173 @@ using FTN.ServiceContracts;
 
 namespace Client.ViewModel
 {
-     public class GetValuesViewModel : BinableBase
-     {
-          public MyICommand GetValues { get; set; }
-          private GetValuesView getValuesView;
+    public class GetValuesViewModel : BinableBase
+    {
+        public MyICommand GetValues { get; set; }
+        public MyICommand LoadModel { get; set; }
+        private GetValuesView getValuesView;
+        public ObservableCollection<PopertyView> PropertiesView { get; set; }
 
-          public GetValuesViewModel(GetValuesView getValuesView)
-          {
-               this.getValuesView = getValuesView;
-               GetValues = new MyICommand(GetResult);
-               
-          }
-          
-          private string gid;
+        public GetValuesViewModel(GetValuesView getValuesView)
+        {
+            this.getValuesView = getValuesView;
+            GetValues = new MyICommand(GetResult);
+            LoadModel = new MyICommand(Load);
+            PropertiesView = new ObservableCollection<PopertyView>();
+        }
+        private long g;
 
-          public string Gid
-          {
-               get { return gid; }
-               set
-               {
-                    if(gid != value)
-                    {
-                         gid = value;
-                         OnPropertyChanged("Gid");
-                    }
-               }
-          }
+        
 
-          private string result;
+        private string gid;
 
-          public string Result
-          {
-               get { return result; }
-               set
-               {
-                    if (result != value)
-                    {
-                         result = value;
-                         OnPropertyChanged("Result");
-                    }
-               }
-          }
+        public string Gid
+        {
+            get { return gid; }
+            set
+            {
+                if (gid != value)
+                {
+                    gid = value;
+                    OnPropertyChanged("Gid");
+                }
+            }
+        }
 
+        private string result;
 
-          private ModelResourcesDesc modelResourcesDesc = new ModelResourcesDesc();
+        public string Result
+        {
+            get { return result; }
+            set
+            {
+                if (result != value)
+                {
+                    result = value;
+                    OnPropertyChanged("Result");
+                }
+            }
+        }
 
-          private NetworkModelGDAProxy gdaQueryProxy = null;
-          private NetworkModelGDAProxy GdaQueryProxy
-          {
-               get
-               {
-                    if (gdaQueryProxy != null)
-                    {
-                         gdaQueryProxy.Abort();
-                         gdaQueryProxy = null;
-                    }
+        
 
-                    gdaQueryProxy = new NetworkModelGDAProxy("NetworkModelGDAEndpoint");
-                    gdaQueryProxy.Open();
+        private ModelResourcesDesc modelResourcesDesc = new ModelResourcesDesc();
 
-                    return gdaQueryProxy;
-               }
-          }
+        private NetworkModelGDAProxy gdaQueryProxy = null;
+        private NetworkModelGDAProxy GdaQueryProxy
+        {
+            get
+            {
+                if (gdaQueryProxy != null)
+                {
+                    gdaQueryProxy.Abort();
+                    gdaQueryProxy = null;
+                }
 
-          private void GetResult()
-          {
-               try
-               {
-                    long g;
-                    var path = Directory.GetCurrentDirectory();
-                    path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Results\"));
+                gdaQueryProxy = new NetworkModelGDAProxy("NetworkModelGDAEndpoint");
+                gdaQueryProxy.Open();
 
-                    if (Gid.StartsWith("0x", StringComparison.Ordinal))
-                    {
-                         Gid = Gid.Remove(0, 2);
+                return gdaQueryProxy;
+            }
+        }
 
-                         g = Convert.ToInt64(Int64.Parse(Gid, System.Globalization.NumberStyles.HexNumber));
-                    }
-                    else
-                    {
-                         g = Convert.ToInt64(Gid);
-                    }
-                    //napravi XML fajl
-                    short type = ModelCodeHelper.ExtractTypeFromGlobalId(g);
-                    List<ModelCode> properties = modelResourcesDesc.GetAllPropertyIds((DMSType)type);
+        private void Load()
+        {
+            PropertiesView.Clear();
 
-                    var rd = GdaQueryProxy.GetValues(g, properties);
-                    if (rd != null)
-                    {
-                         var xmlWriter = new XmlTextWriter(path + "GetValues_Results.xml", Encoding.Unicode);
-                         xmlWriter.Formatting = Formatting.Indented;
-                         rd.ExportToXml(xmlWriter);
-                         xmlWriter.Flush();
-                         xmlWriter.Close();
-                    }
+            if (string.IsNullOrEmpty(Gid))
+            {
+                MessageBox.Show("Morate prvo popuniti GID", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-                    try
-                    {
-                         using (var reader = new StreamReader(path + "GetValues_Results.xml"))
-                         {
-                              Result = reader.ReadToEnd();
-                              return;
-                         }
-                    }
-                    catch (IOException)
-                    {
-                         MessageBox.Show("IO Exception");
-                         Result = "Fajl nije pronadjen";
-                         return;
-                    }
-               }
-               catch (FormatException)
-               {
-                    MessageBox.Show("Unesite validan gid", "Upozorenje");
-                    getValuesView.tbGid.Focus();
-               }
-          }
+            try
+            {
+                if (Gid.StartsWith("0x", StringComparison.Ordinal))
+                {
+                    var NewGid = Gid.Remove(0, 2);
 
-     }
+                    g = Convert.ToInt64(Int64.Parse(NewGid, System.Globalization.NumberStyles.HexNumber));
+                }
+                else
+                {
+                    g = Convert.ToInt64(Gid);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Niste uneli validnu vrednost GID-a", "Greska", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                short type = ModelCodeHelper.ExtractTypeFromGlobalId(g);
+                List<ModelCode> properties = modelResourcesDesc.GetAllPropertyIds((DMSType)type);
+                foreach (var v in properties)
+                {
+                    PropertiesView.Add(new PopertyView(v.ToString(), true)); //popuni sa svim propertijima i da su svi cekirani
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void GetResult()
+        {
+            var path = Directory.GetCurrentDirectory();
+            path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Results\"));
+            
+            //napravi XML fajl
+            List<ModelCode> properties = new List<ModelCode>();
+
+            foreach(var item in PropertiesView)
+            {
+                if (item.IsChecked)
+                {
+                    properties.Add(modelResourcesDesc.GetModelCodeFromModelCodeName(item.Name));
+                }
+            }
+
+            try
+            {
+                //provera da li je validan gid
+                short type = ModelCodeHelper.ExtractTypeFromGlobalId(g);
+                
+                var rd = GdaQueryProxy.GetValues(g, properties);
+                if (rd != null)
+                {
+                    var xmlWriter = new XmlTextWriter(path + "GetValues_Results.xml", Encoding.Unicode);
+                    xmlWriter.Formatting = Formatting.Indented;
+                    rd.ExportToXml(xmlWriter);
+                    xmlWriter.Flush();
+                    xmlWriter.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Greska prilikom upisa u xml fajl. {e.StackTrace}", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                using (var reader = new StreamReader(path + "GetValues_Results.xml"))
+                {
+                    Result = reader.ReadToEnd();
+                    return;
+                }
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("IO Exception");
+                Result = "Fajl nije pronadjen";
+                return;
+            }
+            
+        }
+
+    }
 }
