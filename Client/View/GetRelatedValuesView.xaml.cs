@@ -1,22 +1,11 @@
-﻿using Client.ViewModel;
-using FTN.Common;
-using FTN.Services.NetworkModelService.TestClient;
+﻿using FTN.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using TelventDMS.Services.NetworkModelService.TestClient.Tests;
 
 namespace Client.View
@@ -26,50 +15,43 @@ namespace Client.View
     /// </summary>
     public partial class GetRelatedValuesView : UserControl
     {
-        private ObservableCollection<string> item2 = new ObservableCollection<string>();
-        private ObservableCollection<PopertyView> item3 = new ObservableCollection<PopertyView>();
-        private ObservableCollection<string> item4 = new ObservableCollection<string>();
-
-        public object TestGda { get; private set; }
+        private readonly ObservableCollection<string> _item2 = new ObservableCollection<string>();
+        private readonly ObservableCollection<PopertyView> _item3 = new ObservableCollection<PopertyView>();
+        private readonly ObservableCollection<string> _item4 = new ObservableCollection<string>();
 
         public GetRelatedValuesView()
         {
             InitializeComponent();
             DataContext = this;
-            Combo.ItemsSource = item2;
-            ComboType.ItemsSource = item4;
-            dataGrid4.ItemsSource = item3;
+            Combo.ItemsSource = _item2;
+            ComboType.ItemsSource = _item4;
+            dataGrid4.ItemsSource = _item3;
         }
 
         #region bGetRef_Click
         private void bGetRef_Click(object sender, RoutedEventArgs e)
         {
-            long id = InputGlobalId(tbGid.Text);
+            var id = InputGlobalId(tbGid.Text);
 
-            if (id != -1)
+            if (id == -1) return;
+            var model = new ModelResourcesDesc();
+            var sub = tbGid.Text.Substring(6, 4);
+            ModelCodeHelper.GetDMSTypeFromString(sub, out var dms);
+            var lista = model.GetAllPropertyIds(dms);
+
+            _item2.Clear();
+
+            foreach (var mc in lista)
             {
-                List<ModelCode> lista = new List<ModelCode>();
-
-                ModelResourcesDesc model = new ModelResourcesDesc();
-                DMSType dms;
-                string sub = tbGid.Text.Substring(6, 4);
-                ModelCodeHelper.GetDMSTypeFromString(sub, out dms);
-                lista = model.GetAllPropertyIds(dms);
-
-                item2.Clear();
-
-                foreach (ModelCode mc in lista)
+                var intValue = (int)mc;
+                var hex = intValue.ToString("X");
+                if (hex.EndsWith("09"))
                 {
-                    int intValue = (int)mc;
-                    string hex = intValue.ToString("X");
-                    if (hex.ToString().EndsWith("09"))
-                    {
-                        item2.Add(mc.ToString()); //dodavanje u listu referenci
-                    }
-                    else if (hex.ToString().EndsWith("19"))
-                    {
-                        item2.Add(mc.ToString());
-                    }
+                    _item2.Add(mc.ToString()); //dodavanje u listu referenci
+                }
+                else if (hex.EndsWith("19"))
+                {
+                    _item2.Add(mc.ToString());
                 }
             }
         }
@@ -79,49 +61,52 @@ namespace Client.View
         {
             try
             {
-                ModelCode mc;
-                Enum.TryParse(Combo.SelectedItem.ToString(), true, out mc);
+                Enum.TryParse(Combo.SelectedItem.ToString(), true, out ModelCode mc);
 
-                item4.Clear();
+                _item4.Clear();
 
                 //sve single reference
                 if (mc == ModelCode.PSR_OUTAGESCHEDULE)
                 {
-                    item4.Add(ModelCode.PSR.ToString());
+                    _item4.Add(ModelCode.PSR.ToString());
                 }
                 else if (mc == ModelCode.REGULARTIMEPOINT_INTERVALSCHEDULE)
                 {
-                    item4.Add(ModelCode.REGULARTIMEPOINT.ToString());
+                    _item4.Add(ModelCode.REGULARTIMEPOINT.ToString());
                 }
                 else if (mc == ModelCode.IRREGULARTIMEPOINT_INTERVALSCHEDULE)
                 {
-                    item4.Add(ModelCode.IRREGULARTIMEPOINT.ToString());
+                    _item4.Add(ModelCode.IRREGULARTIMEPOINT.ToString());
                 }
                 else if (mc == ModelCode.CURVEDATA_CURVE)
                 {
-                    item4.Add(ModelCode.CURVEDATA.ToString());
+                    _item4.Add(ModelCode.CURVEDATA.ToString());
                 }
 
                 //sve liste referenci
                 else if(mc == ModelCode.CURVE_CURVEDATAS)
                 {
-                    item4.Add(ModelCode.CURVE.ToString());
+                    _item4.Add(ModelCode.CURVE.ToString());
                 }
                 else if(mc == ModelCode.IRREGULARINTERVALSCHEDULE_TIMEPOINTS)
                 {
-                    item4.Add(ModelCode.IRREGULARINTERVALSCHEDULE.ToString());
+                    _item4.Add(ModelCode.IRREGULARINTERVALSCHEDULE.ToString());
                 }
                 else if(mc == ModelCode.REGULARINTERVALSCHEDULE_TIMEPOINTS)
                 {
-                    item4.Add(ModelCode.REGULARINTERVALSCHEDULE.ToString());
+                    _item4.Add(ModelCode.REGULARINTERVALSCHEDULE.ToString());
                 }
                 else if(mc == ModelCode.OUTAGESCHEDULE_PSRS)
                 {
-                    item4.Add(ModelCode.OUTAGESCHEDULE.ToString());
+                    _item4.Add(ModelCode.DISCONNECTOR.ToString());
+                    _item4.Add(ModelCode.PROTSWITCH.ToString());
                 }
                 
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
         
         #region InputGlobalId
@@ -136,85 +121,85 @@ namespace Client.View
                     text = text.Remove(0, 2);
                     CommonTrace.WriteTrace(CommonTrace.TraceVerbose, "Entering globalId successfully ended.");
 
-                    return Convert.ToInt64(Int64.Parse(text, System.Globalization.NumberStyles.HexNumber));
+                    return Convert.ToInt64(long.Parse(text, System.Globalization.NumberStyles.HexNumber));
                 }
                 else
                 {
-                    MessageBox.Show(string.Format("Format of global id{0} is not valid", text), "Error");
+                    MessageBox.Show($"Format of global id{text} is not valid", "Error");
                     CommonTrace.WriteTrace(CommonTrace.TraceVerbose, "Entering globalId successfully ended.");
                     //return Convert.ToInt64(strId);
                     return -1;
                 }
             }
-            catch (FormatException ex)
+            catch (FormatException)
             {
-                string message = "Entering entity id failed. Please use hex (0x) or decimal format.";
+                const string message = "Entering entity id failed. Please use hex (0x) or decimal format.";
                 CommonTrace.WriteTrace(CommonTrace.TraceError, message);
                 Console.WriteLine(message);
-                throw ex;
+                throw;
             }
         }
         #endregion
 
+        #region ComboType_selectionChanged
         private void ComboType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
-                item3.Clear();
+                _item3.Clear();
 
                 Enum.TryParse(ComboType.SelectedItem.ToString(), true, out ModelCode mc);
-
-                List<ModelCode> klase = new List<ModelCode>
-                {
-                    mc
-                };
+                var allprops = new ModelResourcesDesc();
+                var props = allprops.GetAllPropertyIds(mc);
                 
-                foreach (var v in klase)
+
+                //popunjavanje polja za cekiranje
+                foreach (var v in props)
                 {
-                    if (!item3.Any(x => x.Name.Equals(v.ToString())))
-                        item3.Add(new PopertyView(v.ToString(), true));
+                    _item3.Add(new PopertyView(v.ToString(), true));
                 }
             }
-            catch (Exception) { }
-        }
+            catch (Exception)
+            {
+                // ignored
+            }
+        } 
+        #endregion
 
         private void bGetRelValues_Click(object sender, RoutedEventArgs e)
         {
-            long gid = InputGlobalId(tbGid.Text);
-            if (gid != -1)
-            {
-                List<ModelCode> props = new List<ModelCode>();
-                foreach (var item in item3)
-                {
-                    if (item.IsChecked)
-                    {
-                        ModelCode MyStatus = (ModelCode)Enum.Parse(typeof(ModelCode), item.Name, true);
-                        props.Add(MyStatus);
-                    }
-                }
+            //gid
+            var gid = InputGlobalId(tbGid.Text);
+            if (gid == -1) return;
 
-                Association asc = new Association();
-                ModelCode mc;
-                Enum.TryParse(Combo.SelectedItem.ToString(), true, out mc);
-                asc.PropertyId = mc;
-                Enum.TryParse(ComboType.SelectedItem.ToString(), true, out mc);
-                asc.Type = mc;
+            //za popunjavanje propertija
+            var props = new List<ModelCode>();
+            foreach (var item in _item3)
+            {
+                if (!item.IsChecked) continue;
+                var myStatus = (ModelCode)Enum.Parse(typeof(ModelCode), item.Name, true);
+                props.Add(myStatus);
+            }
+
+            //asocijacija
+            var asc = new Association();
+            Enum.TryParse(Combo.SelectedItem.ToString(), true, out ModelCode mc);
+            asc.PropertyId = mc;
+            Enum.TryParse(ComboType.SelectedItem.ToString(), true, out mc);
+            asc.Type = mc;
                 
 
-                TestGda gda = new TestGda();
-                if (gda.GetRelatedValues(gid, props, asc) != null)
-                {
-                    var path = Directory.GetCurrentDirectory();
-                    path = System.IO.Path.GetFullPath(System.IO.Path.Combine(path, @"..\..\..\Results\GetRelatedValues_Results.xml"));
-                    TextBoxRel.Clear();
-                    if (File.Exists(path))
-                        TextBoxRel.Text = File.ReadAllText(path);
-                    else TextBoxRel.Text = "Fajl ne postoji";
-                }
-                else
-                {
-                    MessageBox.Show("Error in GetRelatedValues");
-                }
+            var gda = new TestGda();
+            if (gda.GetRelatedValues(gid, props, asc) != null)
+            {
+                var path = Directory.GetCurrentDirectory();
+                path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Results\GetRelatedValues_Results.xml"));
+                TextBoxRel.Clear();
+                TextBoxRel.Text = File.Exists(path) ? File.ReadAllText(path) : "Fajl ne postoji";
+            }
+            else
+            {
+                MessageBox.Show("Error in GetRelatedValues");
             }
         }
     }

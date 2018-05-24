@@ -37,7 +37,7 @@
                     </DataGrid.Columns>
                </DataGrid>
           </ScrollViewer>
-          <Button Grid.Row="5" Content="GET"  Margin="10,20,10,10" Background="Gray" Height="20" Width="50" HorizontalAlignment="Center" Name="bGetRelValues" Click="bGetRelValues_Click"  ></Button>
+          <Button Grid.Row="5" Content="Get Related Values"  Margin="10,20,10,10" Height="20" Width="110" HorizontalAlignment="Center" Name="bGetRelValues" Click="bGetRelValues_Click"  ></Button>
 
           <TextBox Grid.Row="6" x:Name="TextBoxRel" Height="170" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
           </TextBox>
