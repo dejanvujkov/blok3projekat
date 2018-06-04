@@ -89,7 +89,7 @@ namespace Client.ViewModel
 
             if (string.IsNullOrEmpty(Gid))
             {
-                MessageBox.Show("Morate prvo popuniti GID", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("You first have to enter GID", "Warning", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -108,7 +108,7 @@ namespace Client.ViewModel
             }
             catch (Exception)
             {
-                MessageBox.Show("Niste uneli validnu vrednost GID-a", "Greska", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("You entered invalid GID", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -123,7 +123,7 @@ namespace Client.ViewModel
             }
             catch (Exception)
             {
-
+                // ignored
             }
         }
 
@@ -160,7 +160,11 @@ namespace Client.ViewModel
             }
             catch (Exception e)
             {
-                MessageBox.Show($"Greska prilikom upisa u xml fajl. {e.StackTrace}", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    string.IsNullOrEmpty(Gid)
+                        ? "Please enter valid GID first"
+                        : "Entered GID does't exists", "Warning",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -175,7 +179,7 @@ namespace Client.ViewModel
             catch (IOException)
             {
                 MessageBox.Show("IO Exception");
-                Result = "Fajl nije pronadjen";
+                Result = "File not found";
                 return;
             }
             

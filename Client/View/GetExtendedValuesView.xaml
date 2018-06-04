@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
         <Label Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="20">Get Extent Values</Label>
         <Label Grid.Row="1" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0">Model Code:</Label>
-        <ComboBox Name="tbModelCode" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="200" Margin="0,0,50,0" SelectedItem="{Binding ModelCode}">
+        <ComboBox Name="tbModelCode" ToolTip="Click to load element" Grid.Row="1" SelectionChanged="TbModelCode_OnSelectionChanged" VerticalAlignment="Center" HorizontalAlignment="Right" Width="200" Margin="0,0,50,0" SelectedItem="{Binding ModelCode}">
             <ComboBoxItem>PROTSWITCH</ComboBoxItem>
             <ComboBoxItem>DISCONNECTOR</ComboBoxItem>
             <ComboBoxItem>CURVE</ComboBoxItem>
@@ -33,7 +33,7 @@
             <ComboBoxItem>BINTERVALSCHEDULE</ComboBoxItem>
             <ComboBoxItem>IRREGULARINTERVALSCHEDULE</ComboBoxItem>-->
         </ComboBox>
-        <Button Grid.Row="1" Width="35" Height="23" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Command="{Binding LoadObject}">Load</Button>
+        
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <DataGrid x:Name="PropertiesDataGrid" CanUserAddRows="False" AutoGenerateColumns="False" Height="150" ItemsSource="{Binding PropertiesView}">
                 <DataGrid.Columns>

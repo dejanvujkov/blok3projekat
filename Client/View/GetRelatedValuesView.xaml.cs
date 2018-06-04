@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using TelventDMS.Services.NetworkModelService.TestClient.Tests;
@@ -13,7 +12,7 @@ namespace Client.View
     /// <summary>
     /// Interaction logic for GetRelatedValuesView.xaml
     /// </summary>
-    public partial class GetRelatedValuesView : UserControl
+    public partial class GetRelatedValuesView
     {
         private readonly ObservableCollection<string> _item2 = new ObservableCollection<string>();
         private readonly ObservableCollection<PopertyView> _item3 = new ObservableCollection<PopertyView>();
@@ -68,38 +67,40 @@ namespace Client.View
                 //sve single reference
                 if (mc == ModelCode.PSR_OUTAGESCHEDULE)
                 {
-                    _item4.Add(ModelCode.PSR.ToString());
+                    _item4.Add($"0 - IDENTIFY OBJECT");
                 }
                 else if (mc == ModelCode.REGULARTIMEPOINT_INTERVALSCHEDULE)
                 {
-                    _item4.Add(ModelCode.REGULARTIMEPOINT.ToString());
+                    _item4.Add($"0 - IDENTIFY OBJECT");
                 }
                 else if (mc == ModelCode.IRREGULARTIMEPOINT_INTERVALSCHEDULE)
                 {
-                    _item4.Add(ModelCode.IRREGULARTIMEPOINT.ToString());
+                    _item4.Add(ModelCode.OUTAGESCHEDULE.ToString());
+                    _item4.Add($"0 - IDENTIFY OBJECT");
                 }
                 else if (mc == ModelCode.CURVEDATA_CURVE)
                 {
-                    _item4.Add(ModelCode.CURVEDATA.ToString());
+                    _item4.Add($"0 - IDENTIFY OBJECT");
                 }
 
                 //sve liste referenci
                 else if(mc == ModelCode.CURVE_CURVEDATAS)
                 {
-                    _item4.Add(ModelCode.CURVE.ToString());
+                    _item4.Add($"0 - IDENTIFY OBJECT");
                 }
                 else if(mc == ModelCode.IRREGULARINTERVALSCHEDULE_TIMEPOINTS)
                 {
-                    _item4.Add(ModelCode.IRREGULARINTERVALSCHEDULE.ToString());
+                    _item4.Add($"0 - IDENTIFY OBJECT");
                 }
                 else if(mc == ModelCode.REGULARINTERVALSCHEDULE_TIMEPOINTS)
                 {
-                    _item4.Add(ModelCode.REGULARINTERVALSCHEDULE.ToString());
+                    _item4.Add($"0 - IDENTIFY OBJECT");
                 }
                 else if(mc == ModelCode.OUTAGESCHEDULE_PSRS)
                 {
                     _item4.Add(ModelCode.DISCONNECTOR.ToString());
                     _item4.Add(ModelCode.PROTSWITCH.ToString());
+                    _item4.Add($"0 - IDENTIFY OBJECT");
                 }
                 
             }
@@ -147,16 +148,27 @@ namespace Client.View
             try
             {
                 _item3.Clear();
-
-                Enum.TryParse(ComboType.SelectedItem.ToString(), true, out ModelCode mc);
-                var allprops = new ModelResourcesDesc();
-                var props = allprops.GetAllPropertyIds(mc);
-                
-
-                //popunjavanje polja za cekiranje
-                foreach (var v in props)
+                var modelResourcesDesc = new ModelResourcesDesc();
+                if (ComboType.SelectedItem.ToString().Equals("0 - IDENTIFY OBJECT"))
                 {
-                    _item3.Add(new PopertyView(v.ToString(), true));
+                    var props = modelResourcesDesc.GetAllPropertyIds(ModelCode.IDOBJ);
+                    foreach (var v in props)
+                    {
+                        _item3.Add(new PopertyView(v.ToString(), true));
+                    }
+                }
+                else
+                {
+                    Enum.TryParse(ComboType.SelectedItem.ToString(), true, out ModelCode mc);
+                    
+                    var props = modelResourcesDesc.GetAllPropertyIds(mc);
+
+
+                    //popunjavanje polja za cekiranje
+                    foreach (var v in props)
+                    {
+                        _item3.Add(new PopertyView(v.ToString(), true));
+                    }
                 }
             }
             catch (Exception)
@@ -168,6 +180,19 @@ namespace Client.View
 
         private void bGetRelValues_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(tbGid.Text))
+            {
+                MessageBox.Show("Enter valid GID first", "Warning!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (ComboType.SelectedItem == null)
+            {
+                MessageBox.Show("Reference type must be selected first. If there is nothing to select from, try loading references fist", "Warning", MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
+            
             //gid
             var gid = InputGlobalId(tbGid.Text);
             if (gid == -1) return;
@@ -195,11 +220,11 @@ namespace Client.View
                 var path = Directory.GetCurrentDirectory();
                 path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Results\GetRelatedValues_Results.xml"));
                 TextBoxRel.Clear();
-                TextBoxRel.Text = File.Exists(path) ? File.ReadAllText(path) : "Fajl ne postoji";
+                TextBoxRel.Text = File.Exists(path) ? File.ReadAllText(path) : "File does not exists";
             }
             else
             {
-                MessageBox.Show("Error in GetRelatedValues");
+                MessageBox.Show("Unkown error in GetRelatedValues");
             }
         }
     }

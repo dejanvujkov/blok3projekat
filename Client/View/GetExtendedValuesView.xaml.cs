@@ -16,15 +16,22 @@ using System.Windows.Shapes;
 
 namespace Client.View
 {
-     /// <summary>
-     /// Interaction logic for GetExtendedValuesView.xaml
-     /// </summary>
-     public partial class GetExtendedValuesView : UserControl
-     {
-          public GetExtendedValuesView()
-          {
-               InitializeComponent();
-               DataContext = new GetExtendedValuesViewModel(this);
-          }
-     }
+    /// <summary>
+    /// Interaction logic for GetExtendedValuesView.xaml
+    /// </summary>
+    public partial class GetExtendedValuesView : UserControl
+    {
+        public GetExtendedValuesViewModel model;
+        public GetExtendedValuesView()
+        {
+            InitializeComponent();
+            model = new GetExtendedValuesViewModel(this);
+            DataContext = model;
+        }
+
+        private void TbModelCode_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            model.Load();
+        }
+    }
 }

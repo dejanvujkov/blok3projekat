@@ -56,7 +56,7 @@ namespace Client.ViewModel
         }
         #endregion
 
-        private void Load()
+        public void Load()
         {
             PropertiesView.Clear();
             //model code bude npr system.controls.combobox.nesto: protswitch, pa zato moramo da parsiramo
@@ -67,7 +67,7 @@ namespace Client.ViewModel
             }
             catch (Exception)
             {
-                MessageBox.Show("Niste izabrali odgovarajuci Model Code", "Greska", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Choose valid Model Code from list first", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -88,7 +88,7 @@ namespace Client.ViewModel
             }
             catch (Exception)
             {
-                MessageBox.Show("Izaberite validnu vrednost model code-a", "Upozorenje");
+                MessageBox.Show("Chosen Model Code is not valid", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 getExtendedValuesView.tbModelCode.Focus();
                 return;
             }
@@ -129,73 +129,77 @@ namespace Client.ViewModel
         }
         #endregion
 
-        
-
         #region GetResult
         private void GetResult()
         {
             if (string.IsNullOrEmpty(ModelCode))
             {
-                MessageBox.Show("Morate ucitati prvo element!", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                MessageBox.Show("You first have to load element!", "Warrning", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
-
-
-            int iteratorId = 0;
-            List<long> ids = new List<long>();
-
-            int numberOfResources = 2;
-            int resourcesLeft = 0;
-
-            List<ModelCode> properties = modelResourcesDesc.GetAllPropertyIds(mc);
-
-            foreach(var item in PropertiesView)
+            else
             {
-                if (!item.IsChecked)
+                int iteratorId = 0;
+                List<long> ids = new List<long>();
+
+                int numberOfResources = 2;
+                int resourcesLeft = 0;
+
+                if (mc == 0)
                 {
-                    properties.Remove(modelResourcesDesc.GetModelCodeFromModelCodeName(item.Name));
-                }
-            }
-
-            iteratorId = GdaQueryProxy.GetExtentValues(mc, properties);
-            resourcesLeft = GdaQueryProxy.IteratorResourcesLeft(iteratorId);
-
-            var path = Directory.GetCurrentDirectory();
-            path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Results\"));
-
-            var xmlWriter = new XmlTextWriter(path + "GetExtentValues_Results.xml", Encoding.Unicode);
-            xmlWriter.Formatting = Formatting.Indented;
-
-            while (resourcesLeft > 0)
-            {
-                List<ResourceDescription> rds = GdaQueryProxy.IteratorNext(numberOfResources, iteratorId);
-
-                for (int i = 0; i < rds.Count; i++)
-                {
-                    ids.Add(rds[i].Id);
-                    rds[i].ExportToXml(xmlWriter);
-                    xmlWriter.Flush();
-                }
-
-                resourcesLeft = GdaQueryProxy.IteratorResourcesLeft(iteratorId);
-            }
-
-            GdaQueryProxy.IteratorClose(iteratorId);
-            xmlWriter.Close();
-
-            try
-            {
-                using (var reader = new StreamReader(path + "GetExtentValues_Results.xml"))
-                {
-                    Result = reader.ReadToEnd();
+                    MessageBox.Show("You didn't load element", "Warning", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-            }
-            catch (IOException)
-            {
-                MessageBox.Show("IO Exception");
-                Result = "Fajl nije pronadjen";
-                return;
+
+                List<ModelCode> properties = modelResourcesDesc.GetAllPropertyIds(mc);
+
+                foreach (var item in PropertiesView)
+                {
+                    if (!item.IsChecked)
+                    {
+                        properties.Remove(modelResourcesDesc.GetModelCodeFromModelCodeName(item.Name));
+                    }
+                }
+
+                iteratorId = GdaQueryProxy.GetExtentValues(mc, properties);
+                resourcesLeft = GdaQueryProxy.IteratorResourcesLeft(iteratorId);
+
+                var path = Directory.GetCurrentDirectory();
+                path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Results\"));
+
+                var xmlWriter = new XmlTextWriter(path + "GetExtentValues_Results.xml", Encoding.Unicode);
+                xmlWriter.Formatting = Formatting.Indented;
+
+                while (resourcesLeft > 0)
+                {
+                    List<ResourceDescription> rds = GdaQueryProxy.IteratorNext(numberOfResources, iteratorId);
+
+                    foreach (var t in rds)
+                    {
+                        ids.Add(t.Id);
+                        t.ExportToXml(xmlWriter);
+                        xmlWriter.Flush();
+                    }
+
+                    resourcesLeft = GdaQueryProxy.IteratorResourcesLeft(iteratorId);
+                }
+
+                GdaQueryProxy.IteratorClose(iteratorId);
+                xmlWriter.Close();
+
+                try
+                {
+                    using (var reader = new StreamReader(path + "GetExtentValues_Results.xml"))
+                    {
+                        Result = reader.ReadToEnd();
+                    }
+                }
+                catch (IOException)
+                {
+                    MessageBox.Show("IO Exception");
+                    Result = "File was not found";
+                    return;
+                }
             }
         }
         #endregion

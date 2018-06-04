@@ -7,7 +7,7 @@
         xmlns:views="clr-namespace:Client.View"
         xmlns:viewModels ="clr-namespace:Client.ViewModel"
         mc:Ignorable="d"
-        Title="Integracije - Dejan Vujkov e342-2014" Height="500" Width="350" WindowStartupLocation="CenterScreen">
+        Title="Integracije - Dejan Vujkov e342-2014" Height="500" Width="350" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
      <Window.DataContext>
           <local:MainWindowViewModel/>
      </Window.DataContext>

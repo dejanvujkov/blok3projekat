@@ -18,10 +18,10 @@
           </Grid.RowDefinitions>
           <Label Grid.Row="0" FontWeight="Bold" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center">Get Related Values</Label>
           <Label Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15" Margin="20,0,0,0">GID:</Label>
-          <TextBox Name="tbGid" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Width="200" Margin="0,0,80,0"></TextBox>
-          <Button Grid.Row="1" x:Name="bGetRef" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Click="bGetRef_Click">Get Ref</Button>
-          <ComboBox Grid.Row="2" x:Name="Combo" SelectionChanged="Combo_SelectionChanged"></ComboBox>
-          <ComboBox Grid.Row="3" x:Name="ComboType" SelectionChanged="ComboType_SelectionChanged"></ComboBox>
+          <TextBox Name="tbGid" ToolTip="Enter GID"  Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Width="200" Margin="0,0,80,0"></TextBox>
+          <Button Grid.Row="1" x:Name="bGetRef" ToolTip="Load references with entered GID" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Click="bGetRef_Click">Load Ref</Button>
+          <ComboBox Grid.Row="2" ToolTip="Select reference" x:Name="Combo" SelectionChanged="Combo_SelectionChanged"></ComboBox>
+          <ComboBox Grid.Row="3" ToolTip="Select reference type" x:Name="ComboType" SelectionChanged="ComboType_SelectionChanged"></ComboBox>
           <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                <DataGrid x:Name="dataGrid4" CanUserAddRows="False" AutoGenerateColumns="False" Height="150" ItemsSource="{Binding item3}">
                     <DataGrid.Columns>
@@ -39,7 +39,7 @@
           </ScrollViewer>
           <Button Grid.Row="5" Content="Get Related Values"  Margin="10,20,10,10" Height="20" Width="110" HorizontalAlignment="Center" Name="bGetRelValues" Click="bGetRelValues_Click"  ></Button>
 
-          <TextBox Grid.Row="6" x:Name="TextBoxRel" Height="170" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+          <TextBox Grid.Row="6" x:Name="TextBoxRel" Height="1000" Width="370" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
           </TextBox>
      </Grid>
 </UserControl>
