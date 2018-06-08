@@ -35,7 +35,7 @@
         </ScrollViewer>
         <Button Grid.Row="3" ToolTip="Get result" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding GetValues}" Margin="0,10,0,0" Height="30" Width="80">Get Values</Button>
         <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <TextBlock Grid.Row="3" Text="{Binding Result}" Height="1000" Width="400" Margin="0,5,0,0"></TextBlock>
+            <TextBlock Grid.Row="3" Text="{Binding Result}" Height="Auto" Width="Auto" Margin="0,5,0,0" TextWrapping="Wrap" IsEnabled="False"></TextBlock>
         </ScrollViewer>
     </Grid>
 </UserControl>

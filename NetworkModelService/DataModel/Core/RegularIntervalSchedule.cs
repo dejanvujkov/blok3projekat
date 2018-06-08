@@ -92,7 +92,7 @@ namespace FTN.Services.NetworkModelService.DataModel.Core
 		}
 	  }
 
-	  public override bool IsReferenced => timePoints.Count > 1 || base.IsReferenced;
+	  public override bool IsReferenced => timePoints.Count > 0 || base.IsReferenced;
 
 	  public override void AddReference(ModelCode referenceId, long globalId)
 	  {

@@ -50,9 +50,7 @@
         </ScrollViewer>
         <Button Grid.Row="3" Width="180" Height="30" Margin="0,20,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding GetExtendedValues}">Get Extent Values</Button>
         <ScrollViewer Grid.Row="4" Margin="0,20,0,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <TextBlock Grid.Row="3" Margin="10,0,0,0" Width="385" Height="1000" Text="{Binding Result}"></TextBlock>
+            <TextBlock Grid.Row="3" Margin="10,0,0,0" Width="Auto" Height="Auto" Text="{Binding Result}" TextWrapping="Wrap" IsEnabled="False"></TextBlock>
         </ScrollViewer>
-        
-        
     </Grid>
 </UserControl>

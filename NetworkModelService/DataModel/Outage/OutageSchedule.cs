@@ -64,7 +64,7 @@ namespace FTN.Services.NetworkModelService.DataModel.Outage
             }
         }
 
-        public override bool IsReferenced => psrs.Count > 1 || base.IsReferenced;
+        public override bool IsReferenced => psrs.Count > 0 || base.IsReferenced;
 
         public override void GetReferences(Dictionary<ModelCode, List<long>> references, TypeOfReference refType)
         {

@@ -186,6 +186,13 @@ namespace Client.View
                 return;
             }
 
+            if (Combo.SelectedItem == null)
+            {
+                MessageBox.Show("Please choose reference for all fields", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
+            }
+
             if (ComboType.SelectedItem == null)
             {
                 MessageBox.Show("Reference type must be selected first. If there is nothing to select from, try loading references fist", "Warning", MessageBoxButton.OK,
@@ -206,12 +213,23 @@ namespace Client.View
                 props.Add(myStatus);
             }
 
-            //asocijacija
             var asc = new Association();
-            Enum.TryParse(Combo.SelectedItem.ToString(), true, out ModelCode mc);
-            asc.PropertyId = mc;
-            Enum.TryParse(ComboType.SelectedItem.ToString(), true, out mc);
-            asc.Type = mc;
+            try
+            {
+                //asocijacija
+                
+                Enum.TryParse(Combo.SelectedItem.ToString(), true, out ModelCode mc);
+                asc.PropertyId = mc;
+                Enum.TryParse(ComboType.SelectedItem.ToString(), true, out mc);
+                asc.Type = mc;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Incorrect field selection for reference or reference type", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+                
+            }
                 
 
             var gda = new TestGda();
@@ -219,7 +237,7 @@ namespace Client.View
             {
                 var path = Directory.GetCurrentDirectory();
                 path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Results\GetRelatedValues_Results.xml"));
-                TextBoxRel.Clear();
+                TextBoxRel.Text = string.Empty;
                 TextBoxRel.Text = File.Exists(path) ? File.ReadAllText(path) : "File does not exists";
             }
             else

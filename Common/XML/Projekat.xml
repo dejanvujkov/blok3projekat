@@ -92,7 +92,7 @@
 	</cim:RegularIntervalSchedule>
 
 	<cim:RegularTimePoint rdf:ID="RegularTimePoint01">
-		<cim:RegularTimePoint.IntervalSchedule rdf:resource="#OutageSchedule01"/>
+		<cim:RegularTimePoint.IntervalSchedule rdf:resource="#RegularIntervalSchedule01"/>
 		<cim:RegularTimePoint.sequenceNumber>9</cim:RegularTimePoint.sequenceNumber>
 		<cim:RegularTimePoint.value1>15.98</cim:RegularTimePoint.value1>
 		<cim:RegularTimePoint.value2>16.99</cim:RegularTimePoint.value2>
